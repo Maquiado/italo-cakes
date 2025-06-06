@@ -75,7 +75,7 @@ function atualizarAvisos() {
     el.addEventListener('input', atualizarTotal);
   });
 
- enviarWhatsapp.addEventListener('click', async () => {
+enviarWhatsapp.addEventListener('click', async () => {
   const tamanhoEl = document.getElementById('tamanho');
   const massa = document.getElementById('massa').value;
   const cobertura = document.getElementById('cobertura').value;
@@ -105,7 +105,6 @@ function atualizarAvisos() {
     dataHora: new Date().toISOString()
   };
 
-  // Prepara o texto do WhatsApp ANTES do await
   let texto = `🍰 Pedido de Bolo - Ítalo Cakes\n\n`;
   texto += `👤 Cliente: ${nome}\n`;
   texto += `📏 Tamanho: ${tamanhoText}\n`;
@@ -119,10 +118,10 @@ function atualizarAvisos() {
   const numeroWhatsApp = '5584988663170'; // Seu número real
   const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`;
 
-  // ✅ Primeiro redireciona o usuário para o WhatsApp (antes de qualquer await!)
-  window.location.href = url;
+  // Abre WhatsApp numa nova aba
+  window.open(url, '_blank');
 
-  // ✅ Depois salva no Firestore em background
+  // Salva no Firestore em background
   try {
     const snapshot = await firebase.firestore()
       .collection("pedidos")
@@ -143,10 +142,9 @@ function atualizarAvisos() {
 
   } catch (error) {
     console.error("Erro ao salvar no Firestore:", error);
-    // NÃO colocar alert aqui, pois usuário já foi pro WhatsApp.
   }
 
-  // ✅ Mostrar confirmação (opcional, mas o usuário já vai ter sido redirecionado)
+  // Mostrar confirmação
   confirmacao.classList.remove('confirmacao-escondida');
   confirmacao.classList.add('confirmacao-visivel');
 
