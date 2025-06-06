@@ -119,7 +119,10 @@ function atualizarAvisos() {
   const numeroWhatsApp = '5584988663170'; // Seu número real
   const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`;
 
-  // SALVA no Firestore
+  // ✅ Primeiro redireciona o usuário para o WhatsApp (antes de qualquer await!)
+  window.location.href = url;
+
+  // ✅ Depois salva no Firestore em background
   try {
     const snapshot = await firebase.firestore()
       .collection("pedidos")
@@ -138,16 +141,12 @@ function atualizarAvisos() {
     await firebase.firestore().collection("pedidos").add(pedido);
     console.log("Pedido salvo no Firestore com sucesso com ordem:", proximaOrdem);
 
-    // ✅ Redireciona para o WhatsApp — mais confiável do que window.open
-    window.location.href = url;
-
   } catch (error) {
     console.error("Erro ao salvar no Firestore:", error);
-    alert("Erro ao salvar o pedido. Tente novamente.");
-    return;
+    // NÃO colocar alert aqui, pois usuário já foi pro WhatsApp.
   }
 
-  // ✅ Mostrar confirmação (opcional, você pode manter se quiser)
+  // ✅ Mostrar confirmação (opcional, mas o usuário já vai ter sido redirecionado)
   confirmacao.classList.remove('confirmacao-escondida');
   confirmacao.classList.add('confirmacao-visivel');
 
