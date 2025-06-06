@@ -276,6 +276,6 @@ button:hover {
 .pedido-card:not(.expanded) .header-status .status-label {
   display: inline-block;
   width: auto;
-  padding: 4px 8px;
+  padding: 8px 12px;
   font-size: 12px;
 }
