@@ -71,7 +71,7 @@ button:hover {
   overflow: hidden;
   max-height: 110px; /* Altura inicial com Nome, Total, Status */
   padding: 3px 6px;
-  transition: max-height 0.3s ease, padding 0.3s ease;
+  transition: max-height 0.0s ease, padding 0.3s ease;
 }
 
 .pedido-card:hover {
