@@ -88,87 +88,86 @@ export default function inicializarMontarBolo() {
   document.getElementById('cobertura')?.addEventListener('input', atualizarTotal);
 
   // Botão enviar
-  enviarWhatsapp.addEventListener('click', async () => {
-    const tipoMassa = document.getElementById('tipoMassa')?.value;
-    const saborMassa = document.getElementById('saborMassa')?.value;
-    const coberturaEl = document.getElementById('cobertura');
-    const coberturaText = coberturaEl.selectedOptions[0]?.text || '';
-    const nome = document.getElementById('nome')?.value.trim();
-    const mensagem = document.getElementById('mensagem')?.value.trim();
-    const tamanho = document.getElementById('tamanho')?.value;
+enviarWhatsapp.addEventListener('click', async () => {
+  const tipoMassa = document.getElementById('tipoMassa')?.value;
+  const saborMassa = document.getElementById('saborMassa')?.value;
+  const coberturaEl = document.getElementById('cobertura');
+  const coberturaText = coberturaEl.selectedOptions[0]?.text || '';
+  const nome = document.getElementById('nome')?.value.trim();
+  const mensagem = document.getElementById('mensagem')?.value.trim();
+  const tamanho = document.getElementById('tamanho')?.value;
 
-    if (!nome) {
-      alert("Por favor, preencha seu nome antes de enviar o pedido.");
-      return;
-    }
+  if (!nome) {
+    alert("Por favor, preencha seu nome antes de enviar o pedido.");
+    return;
+  }
 
-    // Monta o texto do WhatsApp primeiro!
-    let texto = `🍰 Pedido de Bolo - Ítalo Cakes\n\n`;
-    texto += `👤 Cliente: ${nome}\n`;
-    texto += `🎂 Massa: ${tipoMassa} - ${saborMassa}\n`;
-    texto += `🍬 Cobertura: ${coberturaText}\n`;
-    texto += mensagem ? `📝 Obs: ${mensagem}\n` : '';
-    texto += `\n💰 Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+  // Monta o texto do WhatsApp primeiro!
+  let texto = `🍰 Pedido de Bolo - Ítalo Cakes\n\n`;
+  texto += `👤 Cliente: ${nome}\n`;
+  texto += `🎂 Massa: ${tipoMassa} - ${saborMassa}\n`;
+  texto += `🍬 Cobertura: ${coberturaText}\n`;
+  texto += mensagem ? `📝 Obs: ${mensagem}\n` : '';
+  texto += `\n💰 Total: R$ ${total.toFixed(2).replace('.', ',')}`;
 
-    const numeroWhatsApp = '5584988663170';
-    const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`;
+  const numeroWhatsApp = '5584988663170';
+  const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`;
 
-    // Objeto pedido para Firestore
-    const pedido = {
-      nome,
-      tamanho,
-      tipoMassa,
-      saborMassa,
-      cobertura: coberturaText,
-      mensagem: mensagem,
-      total,
-      dataHora: new Date().toISOString()
+  // Objeto pedido para Firestore
+  const pedido = {
+    nome,
+    tamanho,
+    tipoMassa,
+    saborMassa,
+    cobertura: coberturaText,
+    mensagem: mensagem,
+    total,
+    dataHora: new Date().toISOString()
+  };
+
+  // ✅ Primeiro redireciona para o WhatsApp de forma segura
+  window.location.href = url;
+
+  // Salvar no Firestore em background
+  try {
+    const { getFirestore, collection, addDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAzyLDVjy2hjnbIN82x-rYykJHpAhATWVc",
+      authDomain: "italo-cakes.firebaseapp.com",
+      projectId: "italo-cakes",
+      storageBucket: "italo-cakes.appspot.com",
+      messagingSenderId: "1065164711483",
+      appId: "1:1065164711483:web:114b7f5813478ae46a5e1e",
+      measurementId: "G-TZQEFZ0D23"
     };
 
-    // Salvar no Firestore
-    try {
-      const { getFirestore, collection, addDoc, serverTimestamp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
-      const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyAzyLDVjy2hjnbIN82x-rYykJHpAhATWVc",
-        authDomain: "italo-cakes.firebaseapp.com",
-        projectId: "italo-cakes",
-        storageBucket: "italo-cakes.appspot.com",
-        messagingSenderId: "1065164711483",
-        appId: "1:1065164711483:web:114b7f5813478ae46a5e1e",
-        measurementId: "G-TZQEFZ0D23"
-      };
+    await addDoc(collection(db, "pedidos"), {
+      ...pedido,
+      timestamp: serverTimestamp(),
+      ordem: Date.now() * -1
+    });
 
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
+    console.log("Pedido salvo no Firestore com sucesso!");
 
-      await addDoc(collection(db, "pedidos"), {
-        ...pedido,
-        timestamp: serverTimestamp(),
-        ordem: Date.now() * -1
-      });
+  } catch (error) {
+    console.error("Erro ao salvar no Firestore:", error);
+    // Não mostrar alert — o usuário já foi pro WhatsApp.
+  }
 
-      console.log("Pedido salvo no Firestore com sucesso!");
+  // Mostrar confirmação (não vai executar porque o redirect acontece antes)
+  confirmacao.classList.remove('confirmacao-escondida');
+  confirmacao.classList.add('confirmacao-visivel');
 
-      // ✅ Redireciona para o WhatsApp de forma segura
-      window.location.href = url;
-
-    } catch (error) {
-      console.error("Erro ao salvar no Firestore:", error);
-      alert("Erro ao salvar o pedido. Tente novamente.");
-      return;
-    }
-
-    // Mostrar confirmação (opcional, não vai executar porque o redirect acontece antes)
-    confirmacao.classList.remove('confirmacao-escondida');
-    confirmacao.classList.add('confirmacao-visivel');
-
-    setTimeout(() => {
-      confirmacao.classList.remove('confirmacao-visivel');
-      confirmacao.classList.add('confirmacao-escondida');
-    }, 5000);
-  });
+  setTimeout(() => {
+    confirmacao.classList.remove('confirmacao-visivel');
+    confirmacao.classList.add('confirmacao-escondida');
+  }, 5000);
+});
 
   // Inicializa
   mostrarEtapa(0);
