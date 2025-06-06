@@ -248,12 +248,12 @@ button:hover {
 /* CELULARES PEQUENOS */
 @media (max-width: 480px) {
   .admin-container {
-    padding: 100px;
+    padding: 10px;
   }
 
   .pedido-card {
-    max-width: 100%;
-    padding: 2px;
+    max-width: 90%;
+    padding: 10px;
   }
 
   .botoes button {
