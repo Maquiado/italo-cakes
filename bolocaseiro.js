@@ -102,6 +102,18 @@ export default function inicializarMontarBolo() {
       return;
     }
 
+    // Monta o texto do WhatsApp primeiro!
+    let texto = `🍰 Pedido de Bolo - Ítalo Cakes\n\n`;
+    texto += `👤 Cliente: ${nome}\n`;
+    texto += `🎂 Massa: ${tipoMassa} - ${saborMassa}\n`;
+    texto += `🍬 Cobertura: ${coberturaText}\n`;
+    texto += mensagem ? `📝 Obs: ${mensagem}\n` : '';
+    texto += `\n💰 Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+
+    const numeroWhatsApp = '5584988663170';
+    const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`;
+
+    // Objeto pedido para Firestore
     const pedido = {
       nome,
       tamanho,
@@ -131,32 +143,24 @@ export default function inicializarMontarBolo() {
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
 
-   await addDoc(collection(db, "pedidos"), {
-  ...pedido,
-  timestamp: serverTimestamp(),
-  ordem: Date.now() * -1
-});
+      await addDoc(collection(db, "pedidos"), {
+        ...pedido,
+        timestamp: serverTimestamp(),
+        ordem: Date.now() * -1
+      });
 
       console.log("Pedido salvo no Firestore com sucesso!");
+
+      // ✅ Redireciona para o WhatsApp de forma segura
+      window.location.href = url;
+
     } catch (error) {
       console.error("Erro ao salvar no Firestore:", error);
       alert("Erro ao salvar o pedido. Tente novamente.");
       return;
     }
 
-    // Enviar para WhatsApp
-    let texto = `🍰 Pedido de Bolo - Ítalo Cakes\n\n`;
-    texto += `👤 Cliente: ${nome}\n`;
-    texto += `🎂 Massa: ${tipoMassa} - ${saborMassa}\n`;
-    texto += `🍬 Cobertura: ${coberturaText}\n`;
-    texto += mensagem ? `📝 Obs: ${mensagem}\n` : '';
-    texto += `\n💰 Total: R$ ${total.toFixed(2).replace('.', ',')}`;
-
-    const numeroWhatsApp = '84994282475';
-    const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`;
-    window.open(url, '_blank');
-
-    // Mostrar confirmação
+    // Mostrar confirmação (opcional, não vai executar porque o redirect acontece antes)
     confirmacao.classList.remove('confirmacao-escondida');
     confirmacao.classList.add('confirmacao-visivel');
 
