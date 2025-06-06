@@ -75,84 +75,87 @@ function atualizarAvisos() {
     el.addEventListener('input', atualizarTotal);
   });
 
-  enviarWhatsapp.addEventListener('click', async () => {
-    const tamanhoEl = document.getElementById('tamanho');
-    const massa = document.getElementById('massa').value;
-    const cobertura = document.getElementById('cobertura').value;
-    const topoEl = document.getElementById('topo');
-    const nome = document.getElementById('nome').value.trim();
-    const mensagemExtra = document.getElementById('mensagem').value.trim();
+ enviarWhatsapp.addEventListener('click', async () => {
+  const tamanhoEl = document.getElementById('tamanho');
+  const massa = document.getElementById('massa').value;
+  const cobertura = document.getElementById('cobertura').value;
+  const topoEl = document.getElementById('topo');
+  const nome = document.getElementById('nome').value.trim();
+  const mensagemExtra = document.getElementById('mensagem').value.trim();
 
-    const tamanhoText = tamanhoEl.selectedOptions[0]?.text || '';
-    const topoText = topoEl.selectedOptions[0]?.text || '';
-    const adicionaisSelecionados = Array.from(document.querySelectorAll('#adicionais input:checked'))
-      .map(item => item.parentElement.textContent.trim());
+  const tamanhoText = tamanhoEl.selectedOptions[0]?.text || '';
+  const topoText = topoEl.selectedOptions[0]?.text || '';
+  const adicionaisSelecionados = Array.from(document.querySelectorAll('#adicionais input:checked'))
+    .map(item => item.parentElement.textContent.trim());
 
-    if (!nome) {
-      alert("Por favor, preencha seu nome antes de enviar o pedido.");
-      return;
-    }
-
-    const pedido = {
-      nome,
-      tamanho: tamanhoText,
-      massa,
-      cobertura,
-      adicionais: adicionaisSelecionados,
-      topo: topoText,
-      mensagem: mensagemExtra,
-      total: total,
-      dataHora: new Date().toISOString()
-    };
-
-   // 🔥 Salvar no Firestore com campo 'ordem'
-try {
-  const snapshot = await firebase.firestore()
-    .collection("pedidos")
-    .orderBy("ordem", "desc")
-    .limit(1)
-    .get();
-
-  let proximaOrdem = 1;
-  if (!snapshot.empty) {
-    const ultimoPedido = snapshot.docs[0].data();
-    proximaOrdem = (ultimoPedido.ordem || 0) + 1;
+  if (!nome) {
+    alert("Por favor, preencha seu nome antes de enviar o pedido.");
+    return;
   }
 
-  pedido.ordem = proximaOrdem;
+  const pedido = {
+    nome,
+    tamanho: tamanhoText,
+    massa,
+    cobertura,
+    adicionais: adicionaisSelecionados,
+    topo: topoText,
+    mensagem: mensagemExtra,
+    total: total,
+    dataHora: new Date().toISOString()
+  };
 
-  await firebase.firestore().collection("pedidos").add(pedido);
-  console.log("Pedido salvo no Firestore com sucesso com ordem:", proximaOrdem);
-} catch (error) {
-  console.error("Erro ao salvar no Firestore:", error);
-  alert("Erro ao salvar o pedido. Tente novamente.");
-  return;
-}
+  // Prepara o texto do WhatsApp ANTES do await
+  let texto = `🍰 Pedido de Bolo - Ítalo Cakes\n\n`;
+  texto += `👤 Cliente: ${nome}\n`;
+  texto += `📏 Tamanho: ${tamanhoText}\n`;
+  texto += `🎂 Massa: ${massa}\n`;
+  texto += `🍬 Cobertura: ${cobertura}\n`;
+  texto += `➕ Adicionais: ${adicionaisSelecionados.join(', ') || 'Nenhum'}\n`;
+  texto += `🎀 Topo: ${topoText}\n`;
+  texto += mensagemExtra ? `📝 Obs: ${mensagemExtra}\n` : '';
+  texto += `\n💰 Total: R$ ${total.toFixed(2).replace('.', ',')}`;
 
-    // 📲 Enviar para WhatsApp
-    let texto = `🍰 Pedido de Bolo - Ítalo Cakes\n\n`;
-    texto += `👤 Cliente: ${nome}\n`;
-    texto += `📏 Tamanho: ${tamanhoText}\n`;
-    texto += `🎂 Massa: ${massa}\n`;
-    texto += `🍬 Cobertura: ${cobertura}\n`;
-    texto += `➕ Adicionais: ${adicionaisSelecionados.join(', ') || 'Nenhum'}\n`;
-    texto += `🎀 Topo: ${topoText}\n`;
-    texto += mensagemExtra ? `📝 Obs: ${mensagemExtra}\n` : '';
-    texto += `\n💰 Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+  const numeroWhatsApp = '5584988663170'; // Seu número real
+  const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`;
 
-    const numeroWhatsApp = '84994282475'; // Substitua com seu número real
-    const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`;
-    window.open(url, '_blank');
+  // SALVA no Firestore
+  try {
+    const snapshot = await firebase.firestore()
+      .collection("pedidos")
+      .orderBy("ordem", "desc")
+      .limit(1)
+      .get();
 
-    // ✅ Mostrar confirmação
-    confirmacao.classList.remove('confirmacao-escondida');
-    confirmacao.classList.add('confirmacao-visivel');
+    let proximaOrdem = 1;
+    if (!snapshot.empty) {
+      const ultimoPedido = snapshot.docs[0].data();
+      proximaOrdem = (ultimoPedido.ordem || 0) + 1;
+    }
 
-    setTimeout(() => {
-      confirmacao.classList.remove('confirmacao-visivel');
-      confirmacao.classList.add('confirmacao-escondida');
-    }, 5000);
-  });
+    pedido.ordem = proximaOrdem;
+
+    await firebase.firestore().collection("pedidos").add(pedido);
+    console.log("Pedido salvo no Firestore com sucesso com ordem:", proximaOrdem);
+
+    // ✅ Redireciona para o WhatsApp — mais confiável do que window.open
+    window.location.href = url;
+
+  } catch (error) {
+    console.error("Erro ao salvar no Firestore:", error);
+    alert("Erro ao salvar o pedido. Tente novamente.");
+    return;
+  }
+
+  // ✅ Mostrar confirmação (opcional, você pode manter se quiser)
+  confirmacao.classList.remove('confirmacao-escondida');
+  confirmacao.classList.add('confirmacao-visivel');
+
+  setTimeout(() => {
+    confirmacao.classList.remove('confirmacao-visivel');
+    confirmacao.classList.add('confirmacao-escondida');
+  }, 5000);
+});
 
   // Inicializa
   mostrarEtapa(0);
