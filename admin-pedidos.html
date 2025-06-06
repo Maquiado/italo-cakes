@@ -41,7 +41,6 @@
     <div id="pedidosContainer" class="pedidos-lista"></div>
   </div>
 <!-- Modal Edição -->
-<!-- Modal Edição -->
 <div id="modal-edicao" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
@@ -447,7 +446,76 @@ document.getElementById('form-edicao').addEventListener('submit', (e) => {
   const telefone = document.getElementById('edit-telefone').value.trim();
   const total = parseFloat(document.getElementById('edit-total').value);
   const status = document.getElementById('edit-status').value;
+// Variáveis globais para touch drag
+let touchDragCard = null;
+let touchStartX = 0;
+let touchStartY = 0;
 
+const container = document.getElementById("pedidosContainer");
+const lixeira = document.getElementById("lixeira");
+const editar = document.getElementById("editar");
+
+container.addEventListener('touchstart', (e) => {
+  const touch = e.touches[0];
+  const card = e.target.closest('.pedido-card');
+  if (card && touch) {
+    touchDragCard = card;
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+  }
+});
+
+container.addEventListener('touchmove', (e) => {
+  if (!touchDragCard) return;
+  const touch = e.touches[0];
+  if (!touch) return;
+
+  const dx = Math.abs(touch.clientX - touchStartX);
+  const dy = Math.abs(touch.clientY - touchStartY);
+
+  // Opcional: aplicar estilo visual para indicar que está arrastando
+  if (dx > 10 || dy > 10) {
+    touchDragCard.classList.add('dragging-touch');
+  }
+});
+
+container.addEventListener('touchend', (e) => {
+  if (!touchDragCard) return;
+  const touch = e.changedTouches[0];
+  if (!touch) return;
+
+  touchDragCard.classList.remove('dragging-touch');
+
+  const touchX = touch.clientX;
+  const touchY = touch.clientY;
+
+  // Checa se soltou sobre a lixeira
+  const lixeiraRect = lixeira.getBoundingClientRect();
+  if (touchX >= lixeiraRect.left && touchX <= lixeiraRect.right &&
+      touchY >= lixeiraRect.top && touchY <= lixeiraRect.bottom) {
+    const id = touchDragCard.getAttribute('data-id');
+    // Aqui você coloca a ação de excluir
+    console.log("Excluir pedido ID:", id);
+    // Exemplo de chamada: db.collection("pedidos").doc(id).delete() ...
+    touchDragCard = null;
+    return;
+  }
+
+  // Checa se soltou sobre o ícone editar
+  const editarRect = editar.getBoundingClientRect();
+  if (touchX >= editarRect.left && touchX <= editarRect.right &&
+      touchY >= editarRect.top && touchY <= editarRect.bottom) {
+    const id = touchDragCard.getAttribute('data-id');
+    // Aqui você coloca a ação de editar
+    console.log("Editar pedido ID:", id);
+    // Exemplo: abrir modal de edição
+    touchDragCard = null;
+    return;
+  }
+
+  // Se não soltou sobre nenhum ícone, só limpa a variável
+  touchDragCard = null;
+});
   if (pedidoId) {
     console.log('Salvando pedido ID:', pedidoId);
 
@@ -469,6 +537,8 @@ document.getElementById('form-edicao').addEventListener('submit', (e) => {
     });
   }
 });
+
+
 
 
   </script>
