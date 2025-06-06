@@ -271,3 +271,147 @@ button:hover {
     padding: 12px 15px;
   }
 }
+
+/* --------- ÍCONES HEADER (Lixeira e Editar) --------- */
+
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.dropzone {
+  width: 36px;
+  height: 36px;
+  border: 2px solid #444;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2c2c2e;
+  transition: all 0.2s ease;
+  cursor: grab;
+}
+
+.dropzone:hover {
+  background-color: #3a3a3c;
+  border-color: #555;
+}
+
+.dropzone.drag-over#lixeira {
+  background-color: #ff3b30;
+  border-color: #ff3b30;
+}
+
+.dropzone.drag-over#iconeExtra {
+  background-color: #007aff;
+  border-color: #007aff;
+}
+
+.dropzone i {
+  width: 20px;
+  height: 20px;
+  color: #f1f1f1;
+  transition: color 0.2s ease;
+}
+
+.dropzone.drag-over#lixeira i {
+  color: #fff;
+}
+
+.dropzone.drag-over#iconeExtra i {
+  color: #fff;
+}
+
+/* --------- MODAL EDIÇÃO (mesmo estilo do painel) --------- */
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+  background-color: #2c2c2e;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 12px;
+  border: 2px solid #444;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  color: #f1f1f1;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  color: #f1f1f1;
+}
+
+.modal-content label {
+  display: block;
+  margin-top: 12px;
+  color: #f1f1f1;
+  font-weight: bold;
+}
+
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #555;
+  background-color: #1c1c1e;
+  color: #f1f1f1;
+  box-sizing: border-box;
+}
+
+.modal-content button[type="submit"] {
+  margin-top: 18px;
+  padding: 10px 16px;
+  background-color: #007aff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.modal-content button[type="submit"]:hover {
+  background-color: #005ecb;
+}
+
+.modal-content .close {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  font-size: 24px;
+  color: #f1f1f1;
+  cursor: pointer;
+}
+
+/* --------- RESPONSIVIDADE HEADER ICONS --------- */
+
+@media (max-width: 768px) {
+  .header-icons {
+    margin: 10px 0 0 0;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+  }
+
+  .dropzone {
+    width: 40px;
+    height: 40px;
+  }
+}
