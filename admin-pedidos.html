@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pedidos - Ítalo Cakes</title>
+  <link rel="stylesheet" href="admin-pedidos.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+</head>
+<body>
+  <div class="header-fixo">
+    <h2>Pedidos Recebidos 🍰</h2>
+    <button id="logoutBtn">Sair</button>
+  </div>
+
+  <div class="filtro-fixo">
+    <label for="filtroStatus"><strong>Filtrar por status:</strong></label>
+    <select id="filtroStatus">
+      <option value="TODOS">Todos</option>
+      <option value="PENDENTE">Pendentes</option>
+      <option value="ACEITO">Aceitos</option>
+      <option value="REALIZADO">Realizados</option>
+    </select>
+  </div>
+
+  <div class="total-realizados" id="totalRealizados">
+    Total de Bolos Realizados: R$ 0,00
+  </div>
+
+  <div class="admin-container">
+    <div id="pedidosContainer" class="pedidos-lista"></div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAzyLDVjy2hjnbIN82x-rYykJHpAhATWVc",
+      authDomain: "italo-cakes.firebaseapp.com",
+      projectId: "italo-cakes",
+      storageBucket: "italo-cakes.appspot.com",
+      messagingSenderId: "1065164711483",
+      appId: "1:1065164711483:web:114b7f5813478ae46a5e1e",
+      measurementId: "G-TZQEFZ0D23"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = "admin-login.html";
+      } else {
+        carregarPedidos(); // padrão = todos
+      }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      auth.signOut().then(() => {
+        window.location.href = "admin-login.html";
+      });
+    });
+
+    document.getElementById("filtroStatus").addEventListener("change", (e) => {
+      const statusSelecionado = e.target.value;
+      carregarPedidos(statusSelecionado);
+    });
+
+    function carregarPedidos(filtroStatus = "TODOS") {
+  const container = document.getElementById("pedidosContainer");
+  container.innerHTML = "<p>Carregando pedidos...</p>";
+
+  let query = db.collection("pedidos").orderBy("ordem", "asc");
+  if (filtroStatus !== "TODOS") {
+    query = query.where("status", "==", filtroStatus);
+  }
+
+  query.onSnapshot(snapshot => {
+    if (snapshot.empty) {
+      container.innerHTML = "<p>Nenhum pedido encontrado.</p>";
+      return;
+    }
+
+    container.innerHTML = "";
+    snapshot.forEach((doc, index) => {
+      const dados = doc.data();
+      const card = document.createElement("div");
+      card.className = "pedido-card";
+      card.setAttribute("data-id", doc.id);
+
+      if (dados.status === "REALIZADO") {
+        card.classList.add("realizado");
+      }
+
+      // Status Header e Footer
+      let statusHeaderHTML = `
+        <div class="status-label header-status">
+          Status: ${dados.status === "REALIZADO" ? "Realizado ✅" : dados.status}
+        </div>`;
+
+      let statusFooterHTML = `
+        <div class="status-label footer-status">
+          Status: ${dados.status === "REALIZADO" ? "Realizado ✅" : dados.status}
+        </div>`;
+
+      // Botões
+      let botoesHTML = '';
+      if (dados.status === "ACEITO") {
+        botoesHTML = `
+          <button class="btn-realizar">Realizar</button>
+          <button class="btn-excluir">Excluir</button>
+        `;
+      } else if (dados.status === "REALIZADO") {
+        botoesHTML = ''; // não coloca status aqui
+      } else {
+        botoesHTML = `
+          <button class="btn-aceitar">Aceitar</button>
+          <button class="btn-recusar">Recusar</button>
+        `;
+      }
+
+      // Tipo de bolo
+      let tipoBolo = "";
+      if (dados.tipoMassa) {
+        tipoBolo = "Bolo Simples";
+      } else if (dados.massa) {
+        tipoBolo = "Bolo Personalizado";
+      }
+
+      // Conteúdo do Card
+      let conteudoCard = `
+        <div class="cabecalho-card">
+          ${tipoBolo ? `<h3 class="tipo-bolo">${tipoBolo}</h3>` : ""}
+          <p><strong>Nome:</strong> ${dados.nome || "Não informado"}</p>
+          <p><strong>Total:</strong> R$ ${dados.total?.toFixed(2) || "0,00"}</p>
+          ${statusHeaderHTML}
+        </div>
+
+        <div class="detalhes">
+          <p><strong>Data do Pedido:</strong> ${new Date(dados.dataHora).toLocaleString()}</p>
+          ${dados.tamanho ? `<p><strong>Tamanho:</strong> ${dados.tamanho}</p>` : ""}
+          ${dados.massa ? `<p><strong>Massa:</strong> ${dados.massa}</p>` : ""}
+          ${dados.tipoMassa ? `<p><strong>Tipo Massa:</strong> ${dados.tipoMassa}</p>` : ""}
+          ${dados.saborMassa ? `<p><strong>Sabor Massa:</strong> ${dados.saborMassa}</p>` : ""}
+          ${dados.cobertura ? `<p><strong>Cobertura:</strong> ${dados.cobertura}</p>` : ""}
+          ${(dados.adicionais && dados.adicionais.length > 0) ? `<p><strong>Adicionais:</strong> ${dados.adicionais.join(", ")}</p>` : ""}
+          ${dados.topo ? `<p><strong>Topo:</strong> ${dados.topo}</p>` : ""}
+          ${dados.mensagem ? `<p><strong>Mensagem:</strong> ${dados.mensagem}</p>` : ""}
+
+          <div class="botoes">${botoesHTML}</div>
+          ${statusFooterHTML}
+        </div>
+      `;
+
+      card.innerHTML = conteudoCard;
+
+      // Eventos dos botões
+      const botoesDiv = card.querySelector(".botoes");
+
+      const btnAceitar = card.querySelector(".btn-aceitar");
+      const btnRecusar = card.querySelector(".btn-recusar");
+      const btnRealizar = card.querySelector(".btn-realizar");
+      const btnExcluir = card.querySelector(".btn-excluir");
+
+      if (btnAceitar) {
+        btnAceitar.addEventListener("click", (e) => {
+          e.stopPropagation();
+          db.collection("pedidos").doc(doc.id).update({ status: "ACEITO" }).then(() => {
+            botoesDiv.innerHTML = `
+              <button class="btn-realizar">Realizar</button>
+              <button class="btn-excluir">Excluir</button>
+            `;
+            adicionarEventosCard(card, doc.id);
+          });
+        });
+      }
+
+      if (btnRecusar) {
+        btnRecusar.addEventListener("click", (e) => {
+          e.stopPropagation();
+          db.collection("pedidos").doc(doc.id).delete().then(() => {
+            card.classList.add("fade-out-red");
+            setTimeout(() => card.remove(), 800);
+          });
+        });
+      }
+
+      function adicionarEventosCard(card, id) {
+        const btnRealizar = card.querySelector(".btn-realizar");
+        const btnExcluir = card.querySelector(".btn-excluir");
+        const botoesDiv = card.querySelector(".botoes");
+
+        if (btnRealizar) {
+          btnRealizar.addEventListener("click", (e) => {
+            e.stopPropagation();
+            db.collection("pedidos").doc(id).update({ status: "REALIZADO" }).then(() => {
+              card.classList.add("realizado");
+
+              // Atualiza status no Header e Footer
+              const headerStatus = card.querySelector(".header-status");
+              const footerStatus = card.querySelector(".footer-status");
+              headerStatus.innerText = "Status: Realizado ✅";
+              footerStatus.innerText = "Status: Realizado ✅";
+
+              botoesDiv.innerHTML = ""; // remove botões
+              atualizarTotalRealizados();
+            });
+          });
+        }
+
+        if (btnExcluir) {
+          btnExcluir.addEventListener("click", (e) => {
+            e.stopPropagation();
+            db.collection("pedidos").doc(id).delete().then(() => {
+              card.classList.add("fade-out-red");
+              setTimeout(() => card.remove(), 800);
+            });
+          });
+        }
+      }
+
+      if (dados.status === "ACEITO") {
+        adicionarEventosCard(card, doc.id);
+      }
+
+card.addEventListener("click", function(e) {
+  if (e.target.tagName === "BUTTON") return;
+
+  if (card.classList.contains("expanded")) {
+    // Vai colapsar => força sem transição
+    card.classList.add("no-transition");
+    card.classList.remove("expanded");
+
+    // Remove no próximo frame para não afetar as outras interações
+    requestAnimationFrame(() => {
+      card.classList.remove("no-transition");
+    });
+  } else {
+    // Vai expandir normalmente
+    card.classList.add("expanded");
+  }
+});
+
+      container.appendChild(card);
+    });
+
+    // Ordenação com SortableJS
+    new Sortable(container, {
+      animation: 150,
+      ghostClass: 'sortable-ghost',
+      onEnd: function () {
+        const cards = container.querySelectorAll(".pedido-card");
+        cards.forEach((card, index) => {
+          const id = card.getAttribute("data-id");
+          db.collection("pedidos").doc(id).update({
+            ordem: index
+          });
+        });
+      }
+    });
+  });
+}
+
+    function atualizarTotalRealizados() {
+      db.collection("pedidos")
+        .where("status", "==", "REALIZADO")
+        .get()
+        .then(snapshot => {
+          let total = 0;
+          snapshot.forEach(doc => {
+            const dados = doc.data();
+            if (dados.total) {
+              total += dados.total;
+            }
+          });
+
+          document.getElementById("totalRealizados").innerText =
+            `Total de Bolos Realizados: R$ ${total.toFixed(2)}`;
+        });
+    }
+
+    lucide.createIcons();
+    atualizarTotalRealizados();
+  </script>
+</body>
+</html>

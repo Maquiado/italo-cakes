@@ -1,0 +1,41 @@
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, updateDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAzyLDVjy2hjnbIN82x-rYykJHpAhATWVc",
+    authDomain: "italo-cakes.firebaseapp.com",
+    projectId: "italo-cakes",
+    storageBucket: "italo-cakes.appspot.com",
+    messagingSenderId: "1065164711483",
+    appId: "1:1065164711483:web:114b7f5813478ae46a5e1e",
+    measurementId: "G-TZQEFZ0D23"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  async function adicionarCampoOrdem() {
+    const pedidosRef = collection(db, "pedidos");
+    const q = query(pedidosRef, orderBy("dataPedido", "asc"));
+    const snapshot = await getDocs(q);
+
+    let index = 0;
+    for (const docSnap of snapshot.docs) {
+      const data = docSnap.data();
+      if (data.ordem === undefined) {
+        await updateDoc(doc(db, "pedidos", docSnap.id), {
+          ordem: index
+        });
+        console.log(`✅ Pedido ${docSnap.id} atualizado com ordem ${index}`);
+      } else {
+        console.log(`↪️ Pedido ${docSnap.id} já tem ordem (${data.ordem})`);
+      }
+      index++;
+    }
+
+    console.log("🎉 Todos os pedidos foram processados.");
+  }
+
+  adicionarCampoOrdem();
+</script>

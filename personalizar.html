@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Monte seu Bolo | Ítalo Cakes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="personalizar.css" />
+  <!-- Firebase App (compat) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<!-- Firebase Firestore (compat) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="firebase.js"></script>
+</head>
+
+<body>
+
+  <header class="banner-header">
+    <img src="img/banner-topo.png" alt="Italo Gustavo Cake Master" class="banner-img" />
+  </header>
+
+  <nav class="menu">
+    <a href="home.html">Início</a>
+    <a href="sobre.html">Sobre mim</a>
+    <a href="portfolio.html">Portfólio</a>
+  </nav>
+
+  <div class="customizer">
+
+    <!-- ETAPA 1: TAMANHO -->
+    <div class="etapa" id="etapa-1">
+      <label for="tamanho">Escolha o tamanho:</label>
+      <select id="tamanho">
+        <option value="90">Serve 10 pessoas - R$90</option>
+        <option value="120">Serve 15 pessoas - R$120</option>
+        <option value="170">Serve 25/30 pessoas - R$170</option>
+        <option value="230">Serve 40 pessoas - R$230</option>
+        <option value="300">Serve 55/60 pessoas - R$300</option>
+      </select>
+      <button class="proximo">Próximo</button>
+    </div>
+
+    <!-- ETAPA 2: MASSA -->
+    <div class="etapa escondido" id="etapa-2">
+      <label for="massa">Escolha a massa:</label>
+      <select id="massa">
+        <option value="0">Massa branca</option>
+        <option value="0">Massa de chocolate</option>
+        <option value="redvelvet">Massa Red Velvet</option>
+        <option value="mistas">Massas mistas</option>
+      </select>
+      <div id="avisoRedVelvet" class="aviso-redvelvet escondido">
+        🔔 Red Velvet: R$10 até 25 pessoas, R$20 para bolos maiores.
+      </div>
+      <div id="avisoMistas" class="aviso-redvelvet escondido">
+        🔔 Mistas: R$15 até 25 pessoas, R$25 para bolos maiores.
+      </div>
+      <button class="proximo">Próximo</button>
+      <button class="voltar">Voltar</button>
+    </div>
+
+    <!-- ETAPA 3: COBERTURA -->
+    <div class="etapa escondido" id="etapa-3">
+      <label for="cobertura">Escolha a cobertura:</label>
+      <select id="cobertura">
+        <option>Chantyninho</option>
+        <option>Acetato</option>
+      </select>
+      <button class="proximo">Próximo</button>
+      <button class="voltar">Voltar</button>
+    </div>
+
+    <!-- ETAPA 4: ADICIONAIS -->
+    <div class="etapa escondido" id="etapa-4">
+      <label>Escolha os adicionais:</label>
+      <div class="adicionais" id="adicionais">
+        <label><input type="checkbox" value="10"> Cerejas</label>
+        <label><input type="checkbox" value="12"> M&M’s</label>
+        <label><input type="checkbox" value="12"> Oreo</label>
+        <label><input type="checkbox" value="10"> Sonho de Valsa</label>
+        <label><input type="checkbox" value="12"> Kit Kat</label>
+        <label><input type="checkbox" value="5"> Crocante de amendoim</label>
+        <label><input type="checkbox" value="5"> Crocante de castanha</label>
+        <label><input type="checkbox" value="15"> Nutella</label>
+        <label><input type="checkbox" value="20"> Geleia de morango</label>
+        <label><input type="checkbox" value="20"> Geleia de abacaxi</label>
+        <label><input type="checkbox" value="25"> Geleia de abacaxi com côco</label>
+        <label><input type="checkbox" value="25"> Geleia de frutas vermelhas</label>
+        <label><input type="checkbox" value="25"> Geleia de frutas amarelas</label>
+      </div>
+      <div id="avisoAdicionais" class="aviso-adicionais escondido">
+        * Adicionais dobram para bolos acima de 20 pessoas.
+      </div>
+      <button class="proximo">Próximo</button>
+      <button class="voltar">Voltar</button>
+    </div>
+
+    <!-- ETAPA 5: TOPO -->
+    <div class="etapa escondido" id="etapa-5">
+      <label for="topo">Deseja topo personalizado?</label>
+      <select id="topo">
+        <option value="0">Sem Topo</option>
+        <option value="15">Topo: Feliz Aniversário (+R$15)</option>
+        <option value="25">Topo simples personalizado (+R$25)</option>
+        <option value="0">Topo 3D personalizado - À combinar</option>
+      </select>
+      <button class="proximo">Próximo</button>
+      <button class="voltar">Voltar</button>
+    </div>
+
+    <!-- ETAPA 6: FINALIZAÇÃO -->
+    <div class="etapa escondido" id="etapa-6">
+      <label for="nome">Seu nome:</label>
+      <input type="text" id="nome" placeholder="Digite seu nome" required>
+
+      <label for="mensagem">Mensagem extra:</label>
+      <textarea id="mensagem" rows="3" placeholder="Ex: Desejo sem açúcar."></textarea>
+
+      <button class="whatsapp" id="enviarWhatsapp">Enviar pedido via WhatsApp</button>
+      <button class="voltar">Voltar</button>
+    </div>
+
+    <!-- Confirmação -->
+    <div class="confirmacao-escondida" id="confirmacao">Pedido enviado com sucesso!</div>
+
+    <!-- Total fixo -->
+    <div class="total-fixo">
+      <span id="total">Preço Total: R$ 0,00</span>
+    </div>
+
+  </div> <!-- fim .customizer -->
+
+  <!-- Script da lógica de personalização -->
+  <script src="personalizar.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (typeof inicializarMontarBolo === "function") {
+        inicializarMontarBolo();
+      } else {
+        console.error("Função inicializarMontarBolo() não encontrada no personalizar.js.");
+      }
+    });
+  </script>
+
+</body>
+</html>

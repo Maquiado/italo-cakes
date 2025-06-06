@@ -1,0 +1,262 @@
+/* Fonte principal */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: url('img/bg-azul.png') repeat;
+  background-size: 300px auto; /* ajuste o tamanho conforme preferir */
+  color: #244236;
+}
+
+.customizer {
+  max-width: 700px;
+  margin: 2rem auto;
+  background: #ffffffcc;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(52, 18, 114, 0.2);
+  animation: fadeInUp 1s ease;
+}
+
+/* Etapas */
+.etapa {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.etapa label {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #008080;
+}
+
+.etapa select,
+.etapa input,
+.etapa textarea {
+  padding: 0.7rem;
+  border-radius: 10px;
+  border: 2px solid #87e7e7;
+  background: #fff;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.etapa select:focus,
+.etapa input:focus,
+.etapa textarea:focus {
+  border-color: #008080;
+  outline: none;
+}
+.etapa input[type="text"],
+.etapa textarea,
+.etapa select {
+  width: 100%;
+  max-width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 2px solid #75897d;
+  border-radius: 12px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+/* Adicionais */
+.adicionais label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.adicionais input[type="checkbox"] {
+  accent-color: #185e7e;
+  transform: scale(1.2);
+}
+
+/* Avisos */
+.aviso-redvelvet,
+.aviso-adicionais {
+  background-color: #fff0f5;
+  border-left: 5px solid #008080;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #185e7e;
+  animation: fadeIn 0.5s ease;
+  margin-top: 4px; /* 👈 adicionado para reduzir o espaço */
+}
+
+/* Botões */
+.proximo, .whatsapp {
+  background: linear-gradient(to right, #008080, #185e7e);
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  color: white;
+  transition: transform 0.3s, background 0.3s;
+  box-shadow: 0 5px 15px rgba(52, 39, 124, 0.2);
+  display: block;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.voltar {
+  background-color: linear-gradient(to right, #805700, #a34123);
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: bold;
+  border-radius: 40px;
+  cursor: pointer;
+  color: rgb(224, 170, 133);
+  transition: transform 0.3s, background 0.3s;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  display: block;
+  width: 50%;
+  margin: 7px auto 0;
+}
+
+.proximo:hover, .whatsapp:hover {
+  transform: scale(1.05);
+  background: linear-gradient(to right, #008080, #185e7e);
+}
+
+.voltar:hover {
+  transform: scale(1.05);
+  background-color: #963e13;
+}
+
+/* Total fixo */
+.total-fixo {
+  position: sticky;
+  bottom: 0;
+  background-color: #fff0f6;
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border-top: 2px dashed rgba(64, 224, 208, 0.5);
+  z-index: 1000;
+  color: #008080;
+}
+
+/* Confirmação */
+.confirmacao-escondida {
+  background-color: #dff0d8;
+  color: #3c763d;
+  border-left: 5px solid #4caf50;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  display: none;
+  animation: fadeIn 1s ease;
+}
+
+.confirmacao-escondida.show {
+  display: block;
+}
+
+/* Escondido */
+.escondido {
+  display: none;
+}
+
+/* Banner e Menu */
+.banner-header {
+  background-color: #ffffff; /* verde esmeralda escuro */
+  border-radius: 0 0 30px 30px; /* arredondado na parte inferior */
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 10;
+}
+
+.banner-header .banner-img {
+  width: 280px;
+  max-width: 80%;
+  height: auto;
+  border-radius: 20px;
+  animation: flutuar 5s ease-in-out infinite;
+}
+
+.banner-img {
+  max-width: 100%;
+  height: auto;
+  animation: flutuar 5s ease-in-out infinite;
+}
+
+@media (max-width: 768px) {
+  .banner-header .banner-img {
+    width: 240px; /* Aumentado de 220px para 240px */
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-header .banner-img {
+    width: 220px; /* Aumentado de 180px para 220px */
+  }
+}
+
+@keyframes flutuar {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.menu {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  margin: 1rem auto;
+  max-width: 800px;
+  flex-wrap: wrap;
+}
+
+.menu a {
+  text-decoration: none;
+  font-weight: 600;
+  color: #008080;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.menu a:hover {
+  background-color: #c4f5f0;
+}
+
+
+/* Animações */
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(20px);}
+  100% { opacity: 1; transform: translateY(0);}
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+/* Preço da cobertura exibido dinamicamente */
+#valorCobertura {
+  background-color: #e7fafa;
+  border-left: 5px solid #008080;
+  padding: 0.6rem 1rem;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #244236;
+  border-radius: 10px;
+  animation: fadeIn 0.5s ease-in-out;
+}

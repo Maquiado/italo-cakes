@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bem-vindo - Italo Cakes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: linear-gradient(to bottom, #ffffff, #50afb5);
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      overflow: hidden;
+      transition: opacity 1s ease;
+    }
+
+    body.fade-out {
+      opacity: 0;
+    }
+
+    .logo {
+      width: 250px;
+      animation: fadeInScale 4s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeInScale {
+      0% {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Som de entrada -->
+  <audio id="introSound" autoplay>
+    <source src="entrada.mp3" type="audio/mpeg">
+    Seu navegador não suporta áudio HTML5.
+  </audio>
+
+  <img src="img/logobranca.png" alt="Italo Cakes" class="logo">
+
+  <script>
+    // Tocar o som no carregamento
+    window.addEventListener('DOMContentLoaded', () => {
+      const sound = document.getElementById('introSound');
+      if (sound) {
+        sound.play().catch(() => {
+          // Navegadores podem bloquear autoplay sem interação
+        });
+      }
+
+      // Após a animação (4s), faz o fade-out e redireciona
+      setTimeout(() => {
+        document.body.classList.add('fade-out');
+        setTimeout(() => {
+          window.location.href = 'home.html';
+        }, 1000); // tempo do fade-out
+      }, 4000); // tempo da animação da logo
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Italo Cakes</title>
+  <meta name="description" content="Monte seu bolo personalizado com a Italo Cakes. Bolos artesanais com sabor de felicidade!" />
+  <link rel="icon" href="img/favicon.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAzyLDVjy2hjnbIN82x-rYykJHpAhATWVc",
+      authDomain: "italo-cakes.firebaseapp.com",
+      projectId: "italo-cakes",
+      storageBucket: "italo-cakes.appspot.com",
+      messagingSenderId: "1065164711483",
+      appId: "1:1065164711483:web:114b7f5813478ae46a5e1e",
+      measurementId: "G-TZQEFZ0D23"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    db.collection("feedbacks").orderBy("data", "desc").limit(10).get()
+      .then(snapshot => {
+        const container = document.getElementById("feedbacksSwiper");
+
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const item = document.createElement("div");
+          item.className = "swiper-slide";
+
+          const testimonial = document.createElement("div");
+          testimonial.className = "testimonial";
+
+          const comentario = document.createElement("p");
+          comentario.textContent = `"${data.comentario}"`;
+
+          const nome = document.createElement("strong");
+          nome.textContent = `- ${data.nome}`;
+
+          const estrelas = document.createElement("span");
+          estrelas.textContent = "⭐".repeat(data.estrelas);
+
+          testimonial.appendChild(comentario);
+          testimonial.appendChild(nome);
+          testimonial.appendChild(document.createElement("br"));
+          testimonial.appendChild(estrelas);
+
+          item.appendChild(testimonial);
+          container.appendChild(item);
+        });
+
+        new Swiper(".mySwiper-feedbacks", {
+          slidesPerView: 1,
+          loop: true,
+          autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+          },
+          pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+          },
+        });
+      });
+  </script>
+</head>
+<body>
+
+<header class="banner-header">
+  <img src="img/banner-topo.png" alt="Italo Gustavo Cake Master" class="banner-img" />
+</header>
+
+<nav class="menu">
+  <a href="home.html">Início</a>
+  <a href="sobre.html">Sobre mim</a>
+  <a href="portfolio.html">Portfólio</a>
+</nav>
+
+<section class="cake-choice">
+  <div class="container overlay">
+    <h2 class="title">ESCOLHA O SEU BOLO</h2>
+    <div class="cake-options">
+      <div class="cake-card">
+        <img src="img/bolocaseiro.png" alt="Afternoon Cake" class="cake-img" />
+        <h3 class="cake-name">Bolo Caseiro</h3>
+        <button class="order-btn" data-target="bolocaseiro.html">ESCOLHER</button>
+      </div>
+      <div class="cake-card">
+        <img src="img/boloaniversario.png" alt="Birthday Cake" class="cake-img" />
+        <h3 class="cake-name">BOLO ANIVERSARIO</h3>
+        <button class="order-btn" data-target="personalizar.html">ESCOLHER</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials card">
+  <h2>Clientes Satisfeitos</h2>
+
+  <div class="swiper mySwiper-feedbacks">
+    <div class="swiper-wrapper" id="feedbacksSwiper">
+      <!-- Feedbacks reais serão inseridos aqui via JavaScript -->
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 1rem;">
+    <a href="feedback.html" class="whatsapp" style="text-decoration: none; max-width: 250px; margin: auto;">
+      <i class="fa-solid fa-pen"></i> Deixe seu Feedback
+    </a>
+  </div>
+</section>
+
+<footer class="social-footer">
+  <div class="social-icons">
+    <a href="https://www.instagram.com/italo_cakes/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+      <i class="fab fa-instagram"></i>
+    </a>
+    <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+      <i class="fab fa-facebook-f"></i>
+    </a>
+    <a href="#" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+  </div>
+<!-- BOTÃO PAINEL ADMIN -->
+<div style="text-align: center; margin: 1.5rem 0;">
+  <a href="admin-login.html" style="
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    background-color: #196868;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  ">
+    Painel Admin
+  </a>
+</div>
+
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+  document.querySelectorAll('.order-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-target');
+      if (target) {
+        window.location.href = target;
+      }
+    });
+  });
+</script>
+<script src="script.js"></script>
+
+<!-- CSP (opcional, configure no servidor se possível):
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; script-src 'self' https://*.firebaseio.com https://*.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;">
+-->
+
+</body>
+</html>

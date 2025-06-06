@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Monte seu Bolo | Ítalo Cakes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="personalizar.css" />
+</head>
+<header class="banner-header">
+  <img src="img/banner-topo.png" alt="Italo Gustavo Cake Master" class="banner-img" />
+</header>
+<nav class="menu">
+  <a href="home.html">Início</a>
+  <a href="sobre.html">Sobre mim</a>
+  <a href="portfolio.html">Portfólio</a>
+</nav>
+
+<div class="customizer">
+    
+
+  <!-- ETAPA 1: TAMANHO -->
+  <div class="etapa" id="etapa-1">
+    <label for="tamanho">Escolha o tamanho:</label>
+<select id="tamanho" disabled>
+  <option value="0">Serve 10 pessoas</option>
+</select>
+    <button class="proximo">Próximo</button>
+  </div>
+
+  <!-- ETAPA 2: MASSA -->
+<div class="etapa escondido" id="etapa-2">
+  <label for="tipoMassa">Escolha o tipo de massa:</label>
+  <select id="tipoMassa">
+    <option value="tradicional">Tradicional (R$30)</option>
+    <option value="premium">Premium (R$40)</option>
+  </select>
+    <label for="saborMassa">Escolha o sabor:</label>
+  <select id="saborMassa"></select>
+
+  <div id="saboresTradicionais" class="sabores escondido">
+    <label for="massaTradicional">Sabores Tradicionais:</label>
+    <select id="massaTradicional">
+      <option value="Branca">Branca</option>
+      <option value="Chocolate">Chocolate (50%)</option>
+      <option value="Cenoura">Cenoura</option>
+      <option value="Laranja">Laranja</option>
+      <option value="Maracujá">Maracujá</option>
+    </select>
+  </div>
+
+  <div id="saboresPremium" class="sabores escondido">
+    <label for="massaPremium">Sabores Premium:</label>
+    <select id="massaPremium">
+      <option value="Baunilha com cookies">Baunilha com cookies</option>
+      <option value="Paçoca de Amendoim">Paçoca de Amendoim</option>
+      <option value="Café Expresso com cacau">Café Expresso com cacau</option>
+      <option value="Ferrero Rocher">Ferrero Rocher (Cacau 70% com amendoim tostados)</option>
+      <option value="Romeu e Julieta">Romeu e Julieta (Massa de queijo com pedaços de goiabada)</option>
+    </select>
+  </div>
+
+  <button class="proximo">Próximo</button>
+  <button class="voltar">Voltar</button>
+</div>
+
+<!-- ETAPA 3: COBERTURA -->
+<div class="etapa escondido" id="etapa-3">
+  <label for="cobertura">Escolha a cobertura:</label>
+  <select id="cobertura">
+    <option value="15">Chocolate meio amargo + 15</option>
+    <option value="15">Chocolate ao leite + 15</option>
+    <option value="15">Ninho + 15</option>
+    <option value="15">Paçoca + 15</option>
+    <option value="15">Limão + 15</option>
+    <option value="15">Doce de Leite + 15</option>
+    <option value="15">Côco + 15</option>
+    <option value="20">Geleia de Morango + 20</option>
+    <option value="20">Geleia de Abacaxi + 20</option>
+    <option value="22">Geleia de Frutas Vermelhas + 22</option>
+    <option value="22">Geleia de Frutas Amarelas + 22</option>
+  </select>
+
+  <button class="proximo">Próximo</button>
+  <button class="voltar">Voltar</button>
+</div>
+
+  
+
+<!-- ETAPA 4: NOME + MENSAGEM + ENVIAR -->
+<div class="etapa escondido" id="etapa-4">
+  <label for="nome">Seu nome:</label>
+  <input type="text" id="nome" placeholder="Digite seu nome" />
+
+  <label for="mensagem">Mensagem/Observações:</label>
+  <textarea id="mensagem" placeholder="Ex: sem açúcar, escrever 'Feliz aniversário', etc."></textarea>
+
+  <button class="whatsapp" id="enviarWhatsapp">Enviar pedido via WhatsApp</button>
+  <button class="voltar">Voltar</button>
+</div>
+
+  <div class="confirmacao-escondida" id="confirmacao">Pedido enviado com sucesso!</div>
+  <!-- Exibir o total fora das etapas, visível o tempo todo -->
+<div class="total-fixo">
+  <span id="total">Preço Total: R$ 0,00</span>
+</div>
+</div>
+
+<!-- Script da navegação + script do sistema de montagem -->
+<script type="module">
+  // Firebase SDK
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+  apiKey: "AIzaSyAzyLDVjy2hjnbIN82x-rYykJHpAhATWVc",
+  authDomain: "italo-cakes.firebaseapp.com",
+  projectId: "italo-cakes",
+  storageBucket: "italo-cakes.appspot.com",
+  messagingSenderId: "1065164711483",
+  appId: "1:1065164711483:web:114b7f5813478ae46a5e1e",
+  measurementId: "G-TZQEFZ0D23"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  import inicializarMontarBolo from './bolocaseiro.js';
+  inicializarMontarBolo();
+
+  let etapas = Array.from(document.querySelectorAll('.etapa')).filter(e => !e.classList.contains('remover'));
+  let etapaAtual = 0;
+
+  function mostrarEtapa(index) {
+    etapas.forEach((etapa, i) => {
+      etapa.classList.toggle('escondido', i !== index);
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('proximo')) {
+      if (etapaAtual < etapas.length - 1) {
+        etapaAtual++;
+        mostrarEtapa(etapaAtual);
+      }
+    }
+
+    if (e.target.classList.contains('voltar')) {
+      if (etapaAtual > 0) {
+        etapaAtual--;
+        mostrarEtapa(etapaAtual);
+      }
+    }
+  });
+
+  mostrarEtapa(etapaAtual);
+</script>
+
+
+</body>
+</html>

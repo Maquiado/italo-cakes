@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Feedback - Italo Cakes</title>
+  <meta name="description" content="Deixe seu feedback sobre nossos bolos artesanais!" />
+  <link rel="icon" href="/favicon.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css">
+  <style>
+    h2{
+        color: #008080;
+    }
+     .feedback-container {
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .feedback-form {
+      margin-bottom: 3rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #2c5282;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #008080;
+      box-shadow: 0 0 0 3px rgba(0, 128, 128, 0.1);
+    }
+
+    .stars {
+      text-align: center;
+      margin: 1rem 0;
+    }
+
+    .stars span {
+      font-size: 2.5rem;
+      cursor: pointer;
+      color: #ddd;
+      transition: all 0.3s ease;
+      margin: 0 0.25rem;
+    }
+
+    .stars span:hover,
+    .stars span.selected {
+      color: #ffd700;
+      transform: scale(1.1);
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #008080 0%, #006666 100%);
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 128, 128, 0.3);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .stats {
+      text-align: center;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #e0f7f6 0%, #b9f5f2 100%);
+      border-radius: 16px;
+      margin-bottom: 2rem;
+    }
+
+    .stats h3 {
+      color: #008080;
+      margin-bottom: 0.5rem;
+    }
+
+    .average-rating {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #008080;
+    }
+
+    .feedback-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .feedback-item {
+      background: #f8fafc;
+      padding: 1.5rem;
+      border-radius: 16px;
+      border-left: 4px solid #008080;
+      transition: all 0.3s ease;
+    }
+
+    .feedback-item:hover {
+      transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .feedback-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .feedback-name {
+      font-weight: 600;
+      color: #008080;
+    }
+
+    .feedback-stars {
+      color: #ffd700;
+    }
+
+    .feedback-comment {
+      color: #4a5568;
+      line-height: 1.6;
+    }
+
+    .feedback-date {
+      font-size: 0.875rem;
+      color: #718096;
+      margin-top: 0.5rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #718096;
+    }
+
+    .error {
+      background-color: #fed7d7;
+      color: #c53030;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .success {
+      background-color: #c6f6d5;
+      color: #2f855a;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #008080;
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+      transform: translateX(-4px);
+    }
+  </style>
+</head>
+<body>
+
+<div class="feedback-container">
+  <a href="home.html" class="back-link">
+    <i class="fas fa-arrow-left"></i>
+    Voltar ao início
+  </a>
+
+  <h2>Deixe seu Feedback</h2>
+  
+  <div class="feedback-form">
+    <form id="feedbackForm">
+      <div class="form-group">
+        <label for="nome">
+          <i class="fas fa-user"></i>
+          Seu nome
+        </label>
+        <input type="text" id="nome" placeholder="Digite seu nome" required />
+      </div>
+      
+      <div class="form-group">
+        <label>
+          <i class="fas fa-star"></i>
+          Avaliação
+        </label>
+        <div class="stars" id="starRating">
+          <span data-value="1">★</span>
+          <span data-value="2">★</span>
+          <span data-value="3">★</span>
+          <span data-value="4">★</span>
+          <span data-value="5">★</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="comentario">
+          <i class="fas fa-comment"></i>
+          Seu comentário
+        </label>
+        <textarea id="comentario" rows="4" placeholder="Conte-nos sobre sua experiência..." required></textarea>
+      </div>
+      
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <i class="fas fa-paper-plane"></i>
+        Enviar Feedback
+      </button>
+    </form>
+  </div>
+
+  <div class="stats">
+    <h3>Avaliação Média</h3>
+    <div class="average-rating" id="mediaEstrelas">-</div>
+    <div id="totalAvaliacoes">Carregando...</div>
+  </div>
+  
+  <h3>Feedbacks dos Clientes</h3>
+  <div class="feedback-list" id="listaFeedbacks">
+    <div class="loading">
+      <i class="fas fa-spinner fa-spin"></i>
+      Carregando feedbacks...
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+  // Configuração Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyAzyLDVjy2hjnbIN82x-rYykJHpAhATWVc",
+    authDomain: "italo-cakes.firebaseapp.com",
+    projectId: "italo-cakes",
+    storageBucket: "italo-cakes.appspot.com",
+    messagingSenderId: "1065164711483",
+    appId: "1:1065164711483:web:114b7f5813478ae46a5e1e",
+    measurementId: "G-TZQEFZ0D23"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  class FeedbackManager {
+    constructor() {
+      this.avaliacao = 0;
+      this.initializeEventListeners();
+      this.carregarFeedbacks();
+    }
+
+    initializeEventListeners() {
+      // Sistema de estrelas
+      document.querySelectorAll("#starRating span").forEach(star => {
+        star.addEventListener("click", () => this.selecionarEstrela(star));
+        star.addEventListener("mouseover", () => this.highlightStars(star));
+      });
+
+      document.getElementById("starRating").addEventListener("mouseleave", () => {
+        this.resetStarHighlight();
+      });
+
+      // Formulário
+      document.getElementById("feedbackForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        this.enviarFeedback();
+      });
+    }
+
+    selecionarEstrela(star) {
+      this.avaliacao = parseInt(star.dataset.value);
+      this.updateStarDisplay();
+    }
+
+    highlightStars(star) {
+      const value = parseInt(star.dataset.value);
+      document.querySelectorAll("#starRating span").forEach((s, index) => {
+        s.style.color = index < value ? '#ffd700' : '#ddd';
+      });
+    }
+
+    resetStarHighlight() {
+      this.updateStarDisplay();
+    }
+
+    updateStarDisplay() {
+      document.querySelectorAll("#starRating span").forEach((s, index) => {
+        s.classList.toggle("selected", index < this.avaliacao);
+        s.style.color = index < this.avaliacao ? '#ffd700' : '#ddd';
+      });
+    }
+
+    async enviarFeedback() {
+      const nome = document.getElementById("nome").value.trim();
+      const comentario = document.getElementById("comentario").value.trim();
+      const submitBtn = document.getElementById("submitBtn");
+
+      // Validação
+      if (!nome || !comentario || this.avaliacao === 0) {
+        this.showMessage("Por favor, preencha todos os campos e selecione uma avaliação.", "error");
+        return;
+      }
+
+      // Desabilitar botão durante envio
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
+      try {
+        await db.collection("feedbacks").add({
+          nome,
+          comentario,
+          estrelas: this.avaliacao,
+          data: new Date()
+        });
+
+        this.showMessage("Feedback enviado com sucesso! Obrigado pela sua avaliação.", "success");
+        this.resetForm();
+        this.carregarFeedbacks();
+
+      } catch (error) {
+        console.error("Erro ao enviar feedback:", error);
+        this.showMessage("Erro ao enviar feedback. Tente novamente.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Feedback';
+      }
+    }
+
+    resetForm() {
+      document.getElementById("nome").value = "";
+      document.getElementById("comentario").value = "";
+      this.avaliacao = 0;
+      this.updateStarDisplay();
+    }
+
+    showMessage(message, type) {
+      // Remove mensagens anteriores
+      const existingMessages = document.querySelectorAll('.error, .success');
+      existingMessages.forEach(msg => msg.remove());
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = type;
+      messageDiv.textContent = message;
+      
+      const form = document.querySelector('.feedback-form');
+      form.insertBefore(messageDiv, form.firstChild);
+
+      // Remove a mensagem após 5 segundos
+      setTimeout(() => {
+        messageDiv.remove();
+      }, 5000);
+    }
+
+    async carregarFeedbacks() {
+      try {
+        const snapshot = await db.collection("feedbacks")
+          .orderBy("data", "desc")
+          .limit(20)
+          .get();
+
+        const lista = document.getElementById("listaFeedbacks");
+        lista.innerHTML = "";
+
+        let somaEstrelas = 0;
+        let total = 0;
+
+        if (snapshot.empty) {
+          lista.innerHTML = '<div class="loading">Nenhum feedback encontrado ainda.</div>';
+          document.getElementById("mediaEstrelas").textContent = "-";
+          document.getElementById("totalAvaliacoes").textContent = "Seja o primeiro a avaliar!";
+          return;
+        }
+
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          somaEstrelas += data.estrelas;
+          total++;
+
+          const feedbackElement = this.createFeedbackElement(data);
+          lista.appendChild(feedbackElement);
+        });
+
+        // Atualizar estatísticas
+        const media = (somaEstrelas / total).toFixed(1);
+        document.getElementById("mediaEstrelas").textContent = `${media} ⭐`;
+        document.getElementById("totalAvaliacoes").textContent = `Baseado em ${total} avaliação${total > 1 ? 'ões' : ''}`;
+
+      } catch (error) {
+        console.error("Erro ao carregar feedbacks:", error);
+        document.getElementById("listaFeedbacks").innerHTML = 
+          '<div class="error">Erro ao carregar feedbacks. Tente recarregar a página.</div>';
+      }
+    }
+
+    createFeedbackElement(data) {
+      const div = document.createElement("div");
+      div.className = "feedback-item";
+      
+      const dataFormatada = data.data?.toDate ? 
+        data.data.toDate().toLocaleDateString('pt-BR') : 
+        'Data não disponível';
+
+      div.innerHTML = `
+        <div class="feedback-header">
+          <span class="feedback-name">${this.escapeHtml(data.nome)}</span>
+          <span class="feedback-stars">${"⭐".repeat(data.estrelas)}</span>
+        </div>
+        <div class="feedback-comment">${this.escapeHtml(data.comentario)}</div>
+        <div class="feedback-date">${dataFormatada}</div>
+      `;
+      
+      return div;
+    }
+
+escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+  }
+
+  // Inicializar quando o DOM estiver carregado
+  document.addEventListener('DOMContentLoaded', () => {
+    new FeedbackManager();
+  });
+</script>
+</body>
+</html>

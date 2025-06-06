@@ -1,0 +1,192 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background: url('img/bg-azul.png') repeat;
+  background-size: 300px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-container {
+  background-color: #ffffffee;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  animation: fadeInUp 0.8s ease;
+}
+
+.login-container h2 {
+  margin-bottom: 1rem;
+  color: #244236;
+}
+
+.login-container input {
+  width: 100%;
+  padding: 0.8rem;
+  margin: 0.5rem 0;
+  border-radius: 10px;
+  border: 2px solid #87e7e7;
+  font-size: 1rem;
+}
+
+.login-container button {
+  background: linear-gradient(to right, #008080, #185e7e);
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  color: white;
+  margin-top: 1rem;
+  width: 100%;
+  transition: transform 0.3s ease;
+}
+
+.login-container button:hover {
+  transform: scale(1.03);
+}
+
+.erro {
+  color: #e74c3c;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Admin-Pedidos */
+.admin-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  background: #ffffffcc;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(52, 18, 114, 0.2);
+  animation: fadeInUp 1s ease;
+}
+
+.admin-container h2 {
+  text-align: center;
+  color: #244236;
+  margin-bottom: 1rem;
+}
+
+#logoutBtn {
+  background-color: #963e13;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 1rem auto;
+  display: block;
+}
+
+/* Adicione ou substitua a classe abaixo */
+.pedidos-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 1.2rem;
+  margin-top: 2rem;
+}
+
+/* Ajuste no .pedido-card para adaptar ao novo layout */
+.pedido-card {
+  background-color: #f9f5ec;
+  border-left: 5px solid #244236;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+  animation: fadeIn 0.5s ease;
+  transition: transform 0.3s ease;
+}
+
+.pedido-card:hover {
+  transform: translateY(-5px);
+}
+
+.pedido-card p {
+  margin: 5px 0;
+  font-size: 0.95rem;
+  color: #2c3c6f;
+}
+
+
+.pedido-card.fade-out-green {
+  animation: fadeOutGreen 1s forwards;
+}
+
+.pedido-card.fade-out-red {
+  animation: fadeOutRed 1s forwards;
+}
+
+@keyframes fadeOutGreen {
+  0% { background-color: #d4edda; opacity: 1; }
+  100% { background-color: #d4edda; opacity: 0; transform: translateX(50px); }
+}
+
+@keyframes fadeOutRed {
+  0% { background-color: #f8d7da; opacity: 1; }
+  100% { background-color: #f8d7da; opacity: 0; transform: translateX(-50px); }
+}
+
+/*FIXO CABEÇALHO*/
+.header-fixo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #f9f5ec;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-fixo h2 {
+  margin: 0;
+  color: #244236;
+}
+
+#logoutBtn {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.filtro-fixo {
+  position: fixed;
+  top: 80px; /* abaixo do header */
+  left: 0;
+  right: 0;
+  background: #f9f5ec;
+  padding: 12px 20px;
+  z-index: 999;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+.filtro-fixo select {
+  padding: 8px;
+  border-radius: 6px;
+  margin-left: 8px;
+  border: 1px solid #ccc;
+}
+
+.admin-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-top: 160px; /* compensar o espaço do header + filtro fixo */
+}

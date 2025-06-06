@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Administrativo - Ítalo Cakes</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <div class="login-container">
+    <h2>Área Administrativa</h2>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="senha" placeholder="Senha" required />
+      <button type="submit">Entrar</button>
+      <button type="button" onclick="window.location.href='home.html'" style="margin-top: 10px;">Voltar</button>
+      
+    </form>
+    <div id="mensagemErro" class="erro"></div>
+  </div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+  <script>
+  // Configuração Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyAzyLDVjy2hjnbIN82x-rYykJHpAhATWVc",
+    authDomain: "italo-cakes.firebaseapp.com",
+    projectId: "italo-cakes",
+    storageBucket: "italo-cakes.appspot.com",
+    messagingSenderId: "1065164711483",
+    appId: "1:1065164711483:web:114b7f5813478ae46a5e1e",
+    measurementId: "G-TZQEFZ0D23"
+  };
+
+   // Inicializar Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  const auth = firebase.auth();
+
+    const loginForm = document.getElementById('loginForm');
+    const mensagemErro = document.getElementById('mensagemErro');
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('senha').value;
+
+      auth.signInWithEmailAndPassword(email, senha)
+        .then(() => {
+          window.location.href = "admin-pedidos.html"; // redireciona após login
+        })
+        .catch((error) => {
+          mensagemErro.textContent = "Erro ao fazer login: " + error.message;
+        });
+    });
+  </script>
+</body>
+</html>
