@@ -268,14 +268,6 @@ button:hover {
 
   .status-label {
     font-size: 12px;
-    padding: 5px 10px;
+    padding: 2px 10px;
   }
-}
-
-/* Status compactado no header quando não expandido */
-.pedido-card:not(.expanded) .header-status .status-label {
-  display: inline-block;
-  width: auto;
-  padding: 8px 12px;
-  font-size: 12px;
 }
