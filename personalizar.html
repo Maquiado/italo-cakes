@@ -4,15 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Monte seu Bolo | Ítalo Cakes</title>
+  <!-- Google Fonts: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="style.css">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-papapa..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Swiper -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
   <link rel="stylesheet" href="personalizar.css" />
-  <!-- Firebase App (compat) -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<!-- Firebase Firestore (compat) -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+
   <script src="firebase.js"></script>
 </head>
 
@@ -58,6 +71,18 @@
       <div id="avisoMistas" class="aviso-redvelvet escondido">
         🔔 Mistas: R$15 até 25 pessoas, R$25 para bolos maiores.
       </div>
+
+            <div class="recheios" id="recheios">
+        <label><input type="checkbox" value="chololate ao leite"> Chocolate ao Leite</label>
+        <label><input type="checkbox" value="chocolate meio amargo"> Chocolate meio Amargo</label>
+        <label><input type="checkbox" value="brigadeiro Branco"> Brigadeiro Branco</label>
+        <label><input type="checkbox" value="ninho"> Ninho</label>
+        <label><input type="checkbox" value="doce de leite"> Doce de leite</label>
+        <label><input type="checkbox" value="Coco"> Côco</label>
+        <label><input type="checkbox" value="Paçoca"> Paçoca</label>
+      </div>
+      <div id="avisoRecheios">Você pode escolher no máximo 2 recheios.</div>
+
       <button class="proximo">Próximo</button>
       <button class="voltar">Voltar</button>
     </div>
