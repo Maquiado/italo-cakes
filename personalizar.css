@@ -260,3 +260,38 @@ body {
   border-radius: 10px;
   animation: fadeIn 0.5s ease-in-out;
 }
+.recheios-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.recheios-option {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: #fff9f9;
+  border-radius: 8px;
+  border: 1px solid #f0d0d0;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.recheios-option:hover {
+  background: #ffecec;
+}
+
+.recheios-option input {
+  margin-right: 10px;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.aviso {
+  color: #e74c3c;
+  margin: 10px 0;
+  font-size: 0.9em;
+}
