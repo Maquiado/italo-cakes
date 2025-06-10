@@ -41,17 +41,35 @@ function inicializarMontarBolo() {
     totalSpan.textContent = `Preço Total: R$ ${total.toFixed(2).replace('.', ',')}`;
   }
 
-function atualizarAvisos() {
-  const massa = document.getElementById('massa')?.value;
-  const tamanho = parseFloat(document.getElementById('tamanho')?.value || 0);
-  const avisoRV = document.getElementById('avisoRedVelvet');
-  const avisoMistas = document.getElementById('avisoMistas');
-  const avisoAdic = document.getElementById('avisoAdicionais');
+  function atualizarAvisos() {
+    const massa = document.getElementById('massa')?.value;
+    const tamanho = parseFloat(document.getElementById('tamanho')?.value || 0);
+    const avisoRV = document.getElementById('avisoRedVelvet');
+    const avisoMistas = document.getElementById('avisoMistas');
+    const avisoAdic = document.getElementById('avisoAdicionais');
 
-  avisoRV.classList.toggle('escondido', massa !== 'redvelvet');
-  avisoMistas.classList.toggle('escondido', massa !== 'mistas');
-  avisoAdic.classList.toggle('escondido', !(etapaAtual === 3 && tamanho > 120));
+    avisoRV.classList.toggle('escondido', massa !== 'redvelvet');
+    avisoMistas.classList.toggle('escondido', massa !== 'mistas');
+    avisoAdic.classList.toggle('escondido', !(etapaAtual === 3 && tamanho > 120));
+  }
+
+  // Limitar máximo 2 recheios selecionados
+  const recheiosInputs = document.querySelectorAll('#recheios input[type="checkbox"]');
+  recheiosInputs.forEach(input => {
+    input.addEventListener('change', () => {
+      const selecionados = Array.from(recheiosInputs).filter(i => i.checked);
+const avisoRecheios = document.getElementById('avisoRecheios');
+
+if (selecionados.length > 2) {
+  input.checked = false;
+  avisoRecheios.style.display = 'block';
+  setTimeout(() => {
+    avisoRecheios.style.display = 'none';
+  }, 3000); // Esconde depois de 3 segundos
 }
+      atualizarTotal();
+    });
+  });
 
   botoesProximo.forEach(botao => {
     botao.addEventListener('click', () => {
@@ -75,84 +93,90 @@ function atualizarAvisos() {
     el.addEventListener('input', atualizarTotal);
   });
 
-enviarWhatsapp.addEventListener('click', async () => {
-  const tamanhoEl = document.getElementById('tamanho');
-  const massa = document.getElementById('massa').value;
-  const cobertura = document.getElementById('cobertura').value;
-  const topoEl = document.getElementById('topo');
-  const nome = document.getElementById('nome').value.trim();
-  const mensagemExtra = document.getElementById('mensagem').value.trim();
+  enviarWhatsapp.addEventListener('click', async () => {
+    const tamanhoEl = document.getElementById('tamanho');
+    const massa = document.getElementById('massa').value;
+    const cobertura = document.getElementById('cobertura').value;
+    const topoEl = document.getElementById('topo');
+    const nome = document.getElementById('nome').value.trim();
+    const mensagemExtra = document.getElementById('mensagem').value.trim();
 
-  const tamanhoText = tamanhoEl.selectedOptions[0]?.text || '';
-  const topoText = topoEl.selectedOptions[0]?.text || '';
-  const adicionaisSelecionados = Array.from(document.querySelectorAll('#adicionais input:checked'))
-    .map(item => item.parentElement.textContent.trim());
+    const tamanhoText = tamanhoEl.selectedOptions[0]?.text || '';
+    const topoText = topoEl.selectedOptions[0]?.text || '';
+    const adicionaisSelecionados = Array.from(document.querySelectorAll('#adicionais input:checked'))
+      .map(item => item.parentElement.textContent.trim());
 
-  if (!nome) {
-    alert("Por favor, preencha seu nome antes de enviar o pedido.");
-    return;
-  }
+    // NOVO: pegar recheios selecionados para envio
+    const recheiosSelecionados = Array.from(document.querySelectorAll('#recheios input:checked'))
+      .map(item => item.parentElement.textContent.trim());
 
-  const pedido = {
-    nome,
-    tamanho: tamanhoText,
-    massa,
-    cobertura,
-    adicionais: adicionaisSelecionados,
-    topo: topoText,
-    mensagem: mensagemExtra,
-    total: total,
-    dataHora: new Date().toISOString()
-  };
-
-  let texto = `🍰 Pedido de Bolo - Ítalo Cakes\n\n`;
-  texto += `👤 Cliente: ${nome}\n`;
-  texto += `📏 Tamanho: ${tamanhoText}\n`;
-  texto += `🎂 Massa: ${massa}\n`;
-  texto += `🍬 Cobertura: ${cobertura}\n`;
-  texto += `➕ Adicionais: ${adicionaisSelecionados.join(', ') || 'Nenhum'}\n`;
-  texto += `🎀 Topo: ${topoText}\n`;
-  texto += mensagemExtra ? `📝 Obs: ${mensagemExtra}\n` : '';
-  texto += `\n💰 Total: R$ ${total.toFixed(2).replace('.', ',')}`;
-
-  const numeroWhatsApp = '5584988663170'; // Seu número real
-  const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`;
-
-  // Abre WhatsApp numa nova aba
-  window.open(url, '_blank');
-
-  // Salva no Firestore em background
-  try {
-    const snapshot = await firebase.firestore()
-      .collection("pedidos")
-      .orderBy("ordem", "desc")
-      .limit(1)
-      .get();
-
-    let proximaOrdem = 1;
-    if (!snapshot.empty) {
-      const ultimoPedido = snapshot.docs[0].data();
-      proximaOrdem = (ultimoPedido.ordem || 0) + 1;
+    if (!nome) {
+      alert("Por favor, preencha seu nome antes de enviar o pedido.");
+      return;
     }
 
-    pedido.ordem = proximaOrdem;
+    const pedido = {
+      nome,
+      tamanho: tamanhoText,
+      massa,
+      recheios: recheiosSelecionados, // Adicionado recheios aqui
+      cobertura,
+      adicionais: adicionaisSelecionados,
+      topo: topoText,
+      mensagem: mensagemExtra,
+      total: total,
+      dataHora: new Date().toISOString()
+    };
 
-    await firebase.firestore().collection("pedidos").add(pedido);
-    console.log("Pedido salvo no Firestore com sucesso com ordem:", proximaOrdem);
+    let texto = `🍰 Pedido de Bolo - Ítalo Cakes\n\n`;
+    texto += `👤 Cliente: ${nome}\n`;
+    texto += `📏 Tamanho: ${tamanhoText}\n`;
+    texto += `🎂 Massa: ${massa}\n`;
+    texto += `🍫 Recheios: ${recheiosSelecionados.join(', ') || 'Nenhum'}\n`; // Linha nova no texto
+    texto += `🍬 Cobertura: ${cobertura}\n`;
+    texto += `➕ Adicionais: ${adicionaisSelecionados.join(', ') || 'Nenhum'}\n`;
+    texto += `🎀 Topo: ${topoText}\n`;
+    texto += mensagemExtra ? `📝 Obs: ${mensagemExtra}\n` : '';
+    texto += `\n💰 Total: R$ ${total.toFixed(2).replace('.', ',')}`;
 
-  } catch (error) {
-    console.error("Erro ao salvar no Firestore:", error);
-  }
+    const numeroWhatsApp = '5584988663170'; // Seu número real
+    const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`;
 
-  // Mostrar confirmação
-  confirmacao.classList.remove('confirmacao-escondida');
-  confirmacao.classList.add('confirmacao-visivel');
+    // Abre WhatsApp numa nova aba
+    window.open(url, '_blank');
 
-  setTimeout(() => {
-    confirmacao.classList.remove('confirmacao-visivel');
-    confirmacao.classList.add('confirmacao-escondida');
-  }, 5000);
-});
+    // Salva no Firestore em background
+    try {
+      const snapshot = await firebase.firestore()
+        .collection("pedidos")
+        .orderBy("ordem", "desc")
+        .limit(1)
+        .get();
+
+      let proximaOrdem = 1;
+      if (!snapshot.empty) {
+        const ultimoPedido = snapshot.docs[0].data();
+        proximaOrdem = (ultimoPedido.ordem || 0) + 1;
+      }
+
+      pedido.ordem = proximaOrdem;
+
+      await firebase.firestore().collection("pedidos").add(pedido);
+      console.log("Pedido salvo no Firestore com sucesso com ordem:", proximaOrdem);
+
+    } catch (error) {
+      console.error("Erro ao salvar no Firestore:", error);
+    }
+
+    // Mostrar confirmação
+    confirmacao.classList.remove('confirmacao-escondida');
+    confirmacao.classList.add('confirmacao-visivel');
+
+    setTimeout(() => {
+      confirmacao.classList.remove('confirmacao-visivel');
+      confirmacao.classList.add('confirmacao-escondida');
+    }, 5000);
+  });
 
   // Inicializa
   mostrarEtapa(0);
